@@ -62,25 +62,13 @@ int main() {
 		}
 
 		// Main logic
-		// Part 1
-		#if DEBUG_MAIN
-		std::cout << "position before: " << position;
-		#endif
-
+		// Part 1 (position is also used in Part 2)
 		int directionMultiplier = rotateToLeft ? -1 : 1;
 		int movement = static_cast<int>(numSteps) * directionMultiplier;
-		#if DEBUG_MAIN
-		//std::cout << "; position + movement: " << (position + movement) << "; mod(position + movement, numOrientations): " << mod(position + movement, numOrientations);
-		#endif
-
 		int newPosition = mod(position + movement, numOrientations);
 		if (newPosition == 0) {
 			numberOfTimesPointingAtZeroAfterRotation += 1;
 		}
-
-		#if DEBUG_MAIN
-		std::cout << "; movement: " << movement << "; new position: " << newPosition << std::endl;
-		#endif
 
 		// Part 2
 		unsigned int numStepsToReachZeroOnce = (rotateToLeft and position != 0) ? position : numOrientations - position;
@@ -89,11 +77,9 @@ int main() {
 
 			unsigned int numRemainingSteps = numSteps - numStepsToReachZeroOnce;
 			numberOfTimesPointingAtZero += numRemainingSteps / numOrientations;
-			#if DEBUG_MAIN
-			std::cout << "numberOfTimesPointingAtZero: " << numberOfTimesPointingAtZero << std::endl;
-			#endif
 		}
 
+		// Position updating (needed in both parts).
 		position = newPosition;
 	}
 
