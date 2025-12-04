@@ -33,7 +33,7 @@ int main() {
 	}
 
 	int position = startPos;
-	int DEBUG_position2 = startPos;
+	unsigned int numberOfTimesPointingAtZeroAfterRotation = 0;
 	unsigned int numberOfTimesPointingAtZero = 0;
 
 	// just out of curiosity
@@ -43,11 +43,12 @@ int main() {
 	while (std::getline(file, line)) {
 		numLines += 1;
 
+		// Parsing
 		char directionChar = line.front();
 		if (directionChar != leftChar and directionChar != rightChar) {
 			throw std::invalid_argument("Invalid direction character.");
 		}
-		int directionMultiplier = directionChar == leftChar ? -1 : 1;
+		bool rotateToLeft = directionChar == leftChar;
 
 		unsigned int numSteps = 0;
 		unsigned int digitMultiplier = 1;
@@ -60,32 +61,45 @@ int main() {
 			numSteps += digitAsInteger * digitMultiplier;
 		}
 
+		// Main logic
+		// Part 1
 		#if DEBUG_MAIN
 		std::cout << "position before: " << position;
 		#endif
 
+		int directionMultiplier = rotateToLeft ? -1 : 1;
 		int movement = static_cast<int>(numSteps) * directionMultiplier;
 		#if DEBUG_MAIN
 		//std::cout << "; position + movement: " << (position + movement) << "; mod(position + movement, numOrientations): " << mod(position + movement, numOrientations);
 		#endif
-		position = mod(position + movement, numOrientations);
-		if (position == 0) {
-			numberOfTimesPointingAtZero += 1;
+
+		int newPosition = mod(position + movement, numOrientations);
+		if (newPosition == 0) {
+			numberOfTimesPointingAtZeroAfterRotation += 1;
 		}
 
 		#if DEBUG_MAIN
-		std::cout << "; movement: " << movement << "; new position: " << position << std::endl;
+		std::cout << "; movement: " << movement << "; new position: " << newPosition << std::endl;
 		#endif
 
-		DEBUG_position2 = DEBUG_position2 + movement;
-		std::cout << "DEBUG_position2: " << DEBUG_position2 << "; mod(DEBUG_position2, numOrientations): " << mod(DEBUG_position2, numOrientations) << std::endl;
-		if (DEBUG_position2 % static_cast<int>(numOrientations) == 0 and position != 0) {
-			throw std::logic_error("Bruh (line " + std::to_string(numLines) + ")");
+		// Part 2
+		unsigned int numStepsToReachZeroOnce = (rotateToLeft and position != 0) ? position : numOrientations - position;
+		if (numSteps >= numStepsToReachZeroOnce) {
+			numberOfTimesPointingAtZero += 1;
+
+			unsigned int numRemainingSteps = numSteps - numStepsToReachZeroOnce;
+			numberOfTimesPointingAtZero += numRemainingSteps / numOrientations;
+			#if DEBUG_MAIN
+			std::cout << "numberOfTimesPointingAtZero: " << numberOfTimesPointingAtZero << std::endl;
+			#endif
 		}
+
+		position = newPosition;
 	}
 
 	file.close();
 
-	std::cout << "password: " << numberOfTimesPointingAtZero << std::endl;
+	std::cout << "password (part 1): " << numberOfTimesPointingAtZeroAfterRotation << std::endl;
+	std::cout << "password (part 2): " << numberOfTimesPointingAtZero << std::endl;
 	std::cout << "line count: " << numLines << std::endl;
 }
