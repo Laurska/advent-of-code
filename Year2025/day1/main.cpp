@@ -43,7 +43,7 @@ int main() {
 	while (std::getline(file, line)) {
 		numLines += 1;
 
-		// Parsing
+		// --== Parsing ==--
 		char directionChar = line.front();
 		if (directionChar != leftChar and directionChar != rightChar) {
 			throw std::invalid_argument("Invalid direction character.");
@@ -55,13 +55,13 @@ int main() {
 		for (unsigned int iChar = line.size() - 1; iChar > 0; --iChar, digitMultiplier *= 10) {
 			char c = line.at(iChar);
 			if (!isDigit(c)) {
-				throw std::invalid_argument("Non-digit character on a line after the direction character.");
+				throw std::invalid_argument("A line contains a non-digit character after the direction character.");
 			}
 			unsigned int digitAsInteger = c - '0';
 			numSteps += digitAsInteger * digitMultiplier;
 		}
 
-		// Main logic
+		// --== Main logic ==--
 		// Part 1 (position is also used in Part 2)
 		int directionMultiplier = rotateToLeft ? -1 : 1;
 		int movement = static_cast<int>(numSteps) * directionMultiplier;
@@ -79,7 +79,7 @@ int main() {
 			numberOfTimesPointingAtZero += numRemainingSteps / numOrientations;
 		}
 
-		// Position updating (needed in both parts).
+		// --== Position updating (needed in both parts) ==--
 		position = newPosition;
 	}
 
