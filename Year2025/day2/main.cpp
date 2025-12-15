@@ -27,7 +27,7 @@ int main() {
 			throw std::invalid_argument("Invalid file contents: " + errorMessage);
 		}
 		if (std::holds_alternative<EndOfFile>(intervalReadAttemptResult)) {
-			std::cout << "ParseAttemptResult is EndOfFile." << std::endl;
+			//std::cout << "ParseAttemptResult is EndOfFile." << std::endl;
 			break;
 		}
 

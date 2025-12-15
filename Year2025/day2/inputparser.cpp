@@ -78,24 +78,17 @@ UnsignedIntReadAttemptResult InputParser::tryReadUnsignedInt() {
 		return ParseError("File contains a number that begins with a 0-digit");
 	}
 
-	UnsignedInt reversedResult = DigitCharUtility::digitCharToNumber(c);
-	UnsignedInt digitMultiplier = 1;
+	UnsignedInt result = DigitCharUtility::digitCharToNumber(c);
 	std::streampos posInFileBeforeReadingChar = file_->tellg();
 	while (file_->get(c) and DigitCharUtility::isDigit(c)) {
-		digitMultiplier *= 10;
-		reversedResult += DigitCharUtility::digitCharToNumber(c) * digitMultiplier;
+		result *= 10;
+		result += DigitCharUtility::digitCharToNumber(c);
 		posInFileBeforeReadingChar = file_->tellg();
 	}
 	if (file_) {
 		//std::cout << "Calling seekg to return to c:s position. c: " << c << std::endl;
 		file_->seekg(posInFileBeforeReadingChar);
 	}
-	UnsignedInt correctResult = 0;
-	while (digitMultiplier > 0) {
-		correctResult += (reversedResult % 10) * digitMultiplier;
-		reversedResult /= 10;
-		digitMultiplier /= 10;
-	}
 	//std::cout << "Successfully read a positive integer: " << correctResult << std::endl;
-	return correctResult;
+	return result;
 }
